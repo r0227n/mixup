@@ -1,0 +1,33 @@
+[tools]
+rust = "1.92.0"
+
+[tasks.rust-fmt]
+description = "Format Rust code in engine/"
+dir = "engine"
+run = "cargo fmt --all"
+
+[tasks.rust-fmt-check]
+description = "Check Rust formatting in engine/"
+dir = "engine"
+run = "cargo fmt --all --check"
+
+[tasks.rust-clippy]
+description = "Run clippy on engine/ workspace"
+dir = "engine"
+run = "cargo clippy --workspace --all-targets --all-features -- -D warnings"
+
+[tasks.rust-check]
+description = "Run fmt check, clippy, and tests for engine/"
+depends = ["rust-fmt-check", "rust-clippy"]
+dir = "engine"
+run = "cargo test --workspace"
+
+[tasks.download-mp3]
+description = "Download a YouTube video as MP3"
+usage = '''
+arg "<url>" help="YouTube URL to download"
+'''
+run = '''
+mkdir -p assets
+yt-dlp -x --audio-format mp3 --audio-quality 0 --no-playlist -o "assets/%(title)s.%(ext)s" "${usage_url?}"
+'''
