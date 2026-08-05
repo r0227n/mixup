@@ -28,26 +28,54 @@ void main() {
       expect(backend.installedModel, MixupModel.beatThisSmall);
       expect(backend.modelsPath, '/custom');
     });
+
+    test('preserves backend failures', () async {
+      final failure = StateError('checksum mismatch');
+      final mixup = MixupFfi.withBackend(_FailingBackend(failure));
+
+      await expectLater(
+        mixup.install(model: MixupModel.melSpectrogram),
+        throwsA(same(failure)),
+      );
+    });
   });
 
-  test('analyze returns the generated flutter_rust_bridge type', () async {
-    final backend = _FakeBackend();
-    final mixup = MixupFfi.withBackend(backend);
+  group('analyze', () {
+    test('returns the generated flutter_rust_bridge type', () async {
+      final backend = _FakeBackend();
+      final mixup = MixupFfi.withBackend(backend);
 
-    final result = await mixup.analyze(
-      '/music/song.wav',
-      modelsDirectory: '/models',
-    );
+      final result = await mixup.analyze(
+        '/music/song.wav',
+        modelsDirectory: '/models',
+      );
 
-    expect(backend.inputPath, '/music/song.wav');
-    expect(backend.modelsPath, '/models');
-    expect(result.tempoBpm, 120);
-    expect(result.bars.single.vocalState, VocalState.vocal);
-    expect(
-      result.bars.single.beatsSeconds,
-      Float32List.fromList([0, 0.5, 1, 1.5]),
-    );
-    expect(result.warnings, ['review automatic result']);
+      expect(backend.inputPath, '/music/song.wav');
+      expect(backend.modelsPath, '/models');
+      expect(result.tempoBpm, 120);
+      expect(result.bars.single.vocalState, VocalState.vocal);
+      expect(
+        result.bars.single.beatsSeconds,
+        Float32List.fromList([0, 0.5, 1, 1.5]),
+      );
+      expect(result.warnings, ['review automatic result']);
+    });
+
+    test('uses the default models directory', () async {
+      final backend = _FakeBackend();
+      final mixup = MixupFfi.withBackend(backend);
+
+      await mixup.analyze('song.wav');
+
+      expect(backend.modelsPath, 'models');
+    });
+
+    test('preserves backend failures', () async {
+      final failure = ArgumentError.value('missing.wav', 'input');
+      final mixup = MixupFfi.withBackend(_FailingBackend(failure));
+
+      await expectLater(mixup.analyze('missing.wav'), throwsA(same(failure)));
+    });
   });
 }
 
@@ -58,8 +86,8 @@ final class _FakeBackend implements MixupBackend {
 
   @override
   Future<List<String>> install({
-    MixupModel? model,
     required String path,
+    MixupModel? model,
   }) async {
     installedModel = model;
     modelsPath = path;
@@ -92,4 +120,22 @@ final class _FakeBackend implements MixupBackend {
       warnings: ['review automatic result'],
     );
   }
+}
+
+final class _FailingBackend implements MixupBackend {
+  const _FailingBackend(this.failure);
+
+  final Object failure;
+
+  @override
+  Future<TrackAnalysis> analyze({
+    required String input,
+    required String models,
+  }) => Future.error(failure);
+
+  @override
+  Future<List<String>> install({
+    required String path,
+    MixupModel? model,
+  }) => Future.error(failure);
 }

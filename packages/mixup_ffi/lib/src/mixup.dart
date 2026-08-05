@@ -1,14 +1,15 @@
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart'
     show ExternalLibrary;
-
-import 'rust/api.dart';
-import 'rust/api.dart' as rust_api;
-import 'rust/frb_generated.dart';
+import 'package:mixup_ffi/src/rust/api.dart';
+import 'package:mixup_ffi/src/rust/api.dart' as rust_api;
+import 'package:mixup_ffi/src/rust/frb_generated.dart';
 
 /// Injectable boundary for clients that need deterministic engine tests.
 abstract interface class MixupBackend {
-  Future<List<String>> install({MixupModel? model, required String path});
+  /// Installs [model], or every required model when omitted, under [path].
+  Future<List<String>> install({required String path, MixupModel? model});
 
+  /// Analyzes [input] using the model files under [models].
   Future<TrackAnalysis> analyze({
     required String input,
     required String models,
@@ -19,7 +20,7 @@ final class _FlutterRustBridgeBackend implements MixupBackend {
   const _FlutterRustBridgeBackend();
 
   @override
-  Future<List<String>> install({MixupModel? model, required String path}) =>
+  Future<List<String>> install({required String path, MixupModel? model}) =>
       rust_api.install(model: model, path: path);
 
   @override
@@ -33,26 +34,27 @@ final class _FlutterRustBridgeBackend implements MixupBackend {
 final class MixupFfi {
   MixupFfi._(this._backend);
 
+  /// Creates a client backed by a test implementation without loading Rust.
+  factory MixupFfi.withBackend(MixupBackend backend) => MixupFfi._(backend);
+
   /// Loads the generated `flutter_rust_bridge` bindings from [libraryPath].
   static Future<MixupFfi> load({required String libraryPath}) async {
     await MixupRustLib.init(externalLibrary: ExternalLibrary.open(libraryPath));
     return MixupFfi._(const _FlutterRustBridgeBackend());
   }
 
-  /// Creates a client backed by a test implementation without loading Rust.
-  factory MixupFfi.withBackend(MixupBackend backend) => MixupFfi._(backend);
-
   final MixupBackend _backend;
 
-  /// Downloads and checksum-verifies one model, or all required models when [model] is omitted.
+  /// Downloads and verifies one model, or all models when [model] is omitted.
   ///
-  /// Returns the installed model paths in the same order as the CLI prints them.
+  /// Returns installed model paths in the order printed by the CLI.
   Future<List<String>> install({
     MixupModel? model,
     String modelsDirectory = 'models',
   }) => _backend.install(model: model, path: modelsDirectory);
 
-  /// Analyzes tempo, four-beat bars, and per-bar vocal activity in [inputPath].
+  /// Analyzes tempo, four-beat bars, and per-bar vocal activity in
+  /// [inputPath].
   Future<TrackAnalysis> analyze(
     String inputPath, {
     String modelsDirectory = 'models',
