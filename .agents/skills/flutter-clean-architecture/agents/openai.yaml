@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter クリーンアーキテクチャ"
+  short_description: "Flutter の設計境界と SSOT・SOLID 原則に沿って実装する"
+  default_prompt: "$flutter-clean-architecture を使って、Flutter アプリの機能を設計境界と SSOT・SOLID 原則に沿って実装してください。"

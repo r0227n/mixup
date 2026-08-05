@@ -1,0 +1,4 @@
+interface:
+  display_name: "OKF Creator"
+  short_description: "OKFナレッジバンドルを仕様に沿って作成・更新・検証する"
+  default_prompt: "$okf-creator を使って、この資料からOKFナレッジバンドルを作成または更新してください。"
