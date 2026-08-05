@@ -24,6 +24,7 @@ run = "cargo test --workspace"
 
 [tasks.download-mp3]
 description = "Download a YouTube video as MP3"
+dir = "engine"
 usage = '''
 arg "<url>" help="YouTube URL to download"
 '''

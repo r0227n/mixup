@@ -8,4 +8,8 @@
 *.swo
 .DS_Store
 
-assets/**mp3
+engine/assets/**/*.mp3
+
+engine/models/*.onnx
+engine/analysis-result.json
+engine/*-analysis-result.json
