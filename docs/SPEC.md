@@ -81,12 +81,12 @@ Spotify APIから一般楽曲の音源ファイルを自由に取得すること
 
 ### Rustの候補クレート
 
-| 用途 | クレート |
-|---|---|
+| 用途                    | クレート    |
+| ----------------------- | ----------- |
 | MP3・FLACなどのデコード | `symphonia` |
-| リサンプリング | `rubato` |
-| WAV処理 | `hound` |
-| ラウドネス測定 | `ebur128` |
+| リサンプリング          | `rubato`    |
+| WAV処理                 | `hound`     |
+| ラウドネス測定          | `ebur128`   |
 
 ---
 
@@ -489,18 +489,18 @@ flowchart TB
 
 ### Rustバックエンドの候補
 
-| 用途 | 技術 |
-|---|---|
-| Web API | `axum` |
-| 非同期処理 | `tokio` |
-| 音声デコード | `symphonia` |
-| 拍・ダウンビート解析 | `beat-this` |
-| リサンプリング | `rubato` |
-| DBアクセス | `sqlx` |
-| データベース | PostgreSQL |
-| ジョブ管理 | RedisまたはPostgreSQL |
-| モデル推論 | `rten`またはONNX |
-| 音源分離 | Demucs解析サービス |
+| 用途                 | 技術                  |
+| -------------------- | --------------------- |
+| Web API              | `axum`                |
+| 非同期処理           | `tokio`               |
+| 音声デコード         | `symphonia`           |
+| 拍・ダウンビート解析 | `beat-this`           |
+| リサンプリング       | `rubato`              |
+| DBアクセス           | `sqlx`                |
+| データベース         | PostgreSQL            |
+| ジョブ管理           | RedisまたはPostgreSQL |
+| モデル推論           | `rten`またはONNX      |
+| 音源分離             | Demucs解析サービス    |
 
 ---
 
