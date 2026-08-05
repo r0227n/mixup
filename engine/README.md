@@ -1,6 +1,6 @@
 # mixup engine
 
-楽曲を解析し、アイドルライブのMIXを入れやすい区間の判定に利用するRustワークスペースです。現在は、テンポ、拍、4拍単位の小節、および小節ごとのボーカル活動を解析するライブラリとCLIを提供しています。
+楽曲を解析し、アイドルライブのMIXを入れやすい区間の判定に利用するRustワークスペースです。現在は、テンポ、拍、4拍単位の小節、および小節ごとのボーカル活動を解析するライブラリとFlutter向けFFIを提供しています。
 
 解析結果は正解を断定するものではありません。信頼度と警告を含むデータとして返し、利用側でユーザーが確認・修正できることを前提としています。
 
@@ -8,10 +8,9 @@
 
 ```text
 engine/
-├── apps/
-│   └── cli/          # 解析結果をJSONで出力するCLI
 ├── crates/
 │   ├── analysis/     # 拍・小節・ボーカル活動の解析
+│   ├── bridge/       # Flutter/DartとのFFI境界
 │   └── domain/       # 解析結果の共通ドメイン型
 ├── assets/           # 開発用のローカル音源（Git管理外）
 ├── models/           # モデルの取得情報とローカル配置先
@@ -21,11 +20,11 @@ engine/
 依存関係は次の方向に限定します。
 
 ```text
-CLI -> analysis -> domain
+bridge -> analysis -> domain
 ```
 
-- [`apps/cli/`](apps/cli/README.md): CLIの準備、実行、ビルド方法
 - [`crates/analysis/`](crates/analysis/README.md): 解析機能とRust APIの使用方法
+- [`crates/bridge/`](crates/bridge/): Flutter/Dart向けFFI
 - [`crates/domain/`](crates/domain/README.md): 解析結果の型と値の扱い
 - [`models/`](models/README.md): モデルの取得元、チェックサム、ライセンス上の注意事項
 
@@ -39,33 +38,30 @@ Rustのバージョンとコンポーネントは `rust-toolchain.toml` に固�
 
 ## セットアップ
 
-リポジトリルートで、拍解析用モデルをダウンロードします。
+リポジトリルートで、Dart CLIをビルドして拍解析用モデルをダウンロードします。
 
 ```sh
-cargo run --manifest-path engine/Cargo.toml \
-  --package mixup \
-  -- \
-  install --path engine/models
+cd apps/mixup_cli
+dart pub get
+dart run bin/mixup_cli.dart build-native
+dart run bin/mixup_cli.dart install --path ../../engine/models
 ```
 
-CLIはモデルのSHA-256チェックサムを検証します。ボーカル分離用モデルは初回解析時にOSのアプリケーションキャッシュへ自動的にダウンロードされます。
+CLIはモデルのSHA-256チェックサムを検証します。ボーカル分離用モデルは初回解析時にOSのアプリケーションキャッシュへ自動的にダウンロードされます。詳しい使用方法は [`../apps/mixup_cli/README.md`](../apps/mixup_cli/README.md) を参照してください。
 
 著作権上、再配布できない楽曲をリポジトリへ追加しないでください。ローカルの開発用音源は `engine/assets/` に置き、Gitでは管理しません。
 
 ## CLIで解析する
 
-リポジトリルートから、解析する音声ファイルとモデルディレクトリを指定します。
+`apps/mixup_cli/` から、解析する音声ファイルとモデルディレクトリを指定します。
 
 ```sh
-cargo run --manifest-path engine/Cargo.toml \
-  --package mixup \
-  -- \
-  analyze \
-  path/to/audio.mp3 \
-  --models engine/models
+dart run bin/mixup_cli.dart \
+  analyze path/to/audio.mp3 \
+  --models ../../engine/models
 ```
 
-対応形式はMP3、WAV、FLAC、OGGです。解析結果のJSONは標準出力へ、進行メッセージとエラーは標準エラー出力へ出力されます。詳しい使用方法は [`apps/cli/README.md`](apps/cli/README.md) を参照してください。
+対応形式はMP3、WAV、FLAC、OGGです。解析結果のJSONは標準出力へ、進行メッセージとエラーは標準エラー出力へ出力されます。
 
 ## 開発時の確認
 
@@ -93,7 +89,7 @@ cargo test --manifest-path engine/Cargo.toml --package mixup-domain
 
 ## 実装時の原則
 
-- 解析と推薦の中核ロジックは再利用可能な `crates/` に置き、CLIや将来のFlutter bridgeへ重複実装しません。
+- 解析と推薦の中核ロジックは再利用可能な `crates/` に置き、Dart CLIやFlutterへ重複実装しません。
 - 共通のデータ型とその意味は `mixup-domain` を正とします。
 - 時刻の単位、値域、信頼度をAPI上で明確にします。
 - 解析失敗と、解析には成功したものの信頼度が低い結果を区別します。
