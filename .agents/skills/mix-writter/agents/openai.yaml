@@ -1,0 +1,4 @@
+interface:
+  display_name: "MIXライター"
+  short_description: "セッション内のMIXを所定のOKF形式で追加・更新・検証する"
+  default_prompt: "$mix-writter を使って、このセッションで入力したMIXをmixsディレクトリへ追加してください。"
