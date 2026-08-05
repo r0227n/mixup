@@ -16,10 +16,9 @@
 
 ```text
 .
-├── app/                  # Flutterアプリ
+├── apps/
+│   └── mixup_cli/        # engineの動作確認用Dart CLI
 ├── engine/               # Rustワークスペース
-│   ├── apps/
-│   │   └── cli/          # CLIバイナリ
 │   ├── crates/
 │   │   ├── domain/       # 共通のドメイン型
 │   │   ├── audio/        # デコード・正規化・リサンプリング
@@ -41,15 +40,15 @@
 依存関係は原則として次の方向に限定します。
 
 ```text
-Flutter app -> bridge -> analysis / recommender
-CLI -----------------> analysis / recommender
+Flutter app -----> bridge -> analysis / recommender
+Dart CLI --------> bridge
 recommender ----------> analysis / domain
 analysis -------------> audio / domain
 audio ----------------> domain
 ```
 
 - `domain`は他のプロジェクト内クレートへ依存させません。
-- `cli`と`bridge`には音声解析や推薦の中核ロジックを書きません。
+- `mixup_cli`と`bridge`には音声解析や推薦の中核ロジックを書きません。
 - FlutterにRust側の解析ロジックを重複実装しません。
 - FFI固有の型をドメイン層へ持ち込みません。
 - 外部ライブラリの型は境界でプロジェクト固有の型へ変換します。
@@ -85,7 +84,7 @@ Rust・Flutterを問わず、**SSOT**と**SOLID原則**に従って実装しま�
 
 - Rustワークスペースのルートは`engine/Cargo.toml`とします。
 - 再利用可能な処理は`engine/crates/`へ置きます。
-- CLIは`engine/apps/cli/`へ置き、パッケージ名とバイナリ名は`mixup`に統一します。
+- engineの動作確認用CLIは`apps/mixup_cli/`に置き、`bridge`を介してRustの処理を呼び出します。
 - 公開APIには、用途・単位・失敗条件が分かるドキュメントコメントを付けます。
 - 時刻と長さの単位を型名またはフィールド名で明確にします。曖昧な数値だけを渡さないでください。
 - 音声サンプルのチャンネル数、サンプルレート、値域をAPI境界で明示します。
