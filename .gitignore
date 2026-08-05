@@ -11,3 +11,6 @@
 engine/assets/**/*.mp3
 
 *.onnx
+
+# Dart
+**/.dart_tool/

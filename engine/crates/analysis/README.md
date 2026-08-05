@@ -1,6 +1,6 @@
 # mixup-analysis
 
-楽曲のテンポ、拍、小節、および小節ごとのボーカル活動を解析するRustクレートです。CLIやFlutterとの境界から再利用する解析ロジックを提供し、解析結果は `mixup-domain` の型で返します。
+楽曲のテンポ、拍、小節、および小節ごとのボーカル活動を解析するRustクレートです。Flutter/DartとのFFI境界から再利用する解析ロジックを提供し、解析結果は `mixup-domain` の型で返します。
 
 ## 主な機能
 
@@ -15,10 +15,10 @@
 拍解析には `mel_spectrogram.onnx` と `beat_this_small.onnx` が必要です。リポジトリルートで次のコマンドを実行すると、チェックサムを検証して `engine/models/` へダウンロードします。
 
 ```sh
-cargo run --manifest-path engine/Cargo.toml \
-  --package mixup \
-  -- \
-  install --path engine/models
+cd apps/mixup_cli
+dart pub get
+dart run bin/mixup_cli.dart build-native
+dart run bin/mixup_cli.dart install --path ../../engine/models
 ```
 
 ボーカル分離用モデルは、初回解析時に `stem-splitter-core` によってOSのアプリケーションキャッシュへダウンロードされます。モデルの詳細とライセンス上の注意事項は [`../../models/README.md`](../../models/README.md) を参照してください。

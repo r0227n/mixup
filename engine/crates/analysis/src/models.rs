@@ -1,3 +1,5 @@
+//! Installation of the inference models required by the analyzer.
+
 use std::{
     fs::{self, File},
     io::{Read, Write},
@@ -5,23 +7,31 @@ use std::{
 };
 
 use anyhow::{Context, Result, bail};
-use clap::ValueEnum;
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 const MODEL_BASE_URL: &str = "https://raw.githubusercontent.com/danigb/beat-this-rs/main/models";
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
-pub(crate) enum ModelName {
+/// An inference model that can be installed for [`crate::Analyzer`].
+#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ModelName {
+    /// Converts decoded audio into the mel spectrogram consumed by the beat model.
     MelSpectrogram,
+    /// The small Beat This beat- and downbeat-tracking model.
     BeatThisSmall,
 }
 
 impl ModelName {
-    pub(crate) fn all() -> Vec<Self> {
-        Self::value_variants().to_vec()
+    /// All models required by the analyzer, in installation order.
+    #[must_use]
+    pub const fn all() -> [Self; 2] {
+        [Self::MelSpectrogram, Self::BeatThisSmall]
     }
 
-    pub(crate) const fn file_name(self) -> &'static str {
+    /// File name used both by the remote model repository and the local analyzer.
+    #[must_use]
+    pub const fn file_name(self) -> &'static str {
         match self {
             Self::MelSpectrogram => "mel_spectrogram.onnx",
             Self::BeatThisSmall => "beat_this_small.onnx",
@@ -40,7 +50,15 @@ impl ModelName {
     }
 }
 
-pub(crate) fn install(model: ModelName, destination: &Path) -> Result<PathBuf> {
+/// Download and checksum-verify one analyzer model into `destination`.
+///
+/// An existing complete model is only replaced after the new download passes verification.
+///
+/// # Errors
+///
+/// Returns an error when the directory cannot be created, the download fails, the model cannot be
+/// written, or its SHA-256 checksum differs from the pinned checksum.
+pub fn install_model(model: ModelName, destination: &Path) -> Result<PathBuf> {
     let url = format!("{MODEL_BASE_URL}/{}", model.file_name());
     let response = ureq::get(&url)
         .call()

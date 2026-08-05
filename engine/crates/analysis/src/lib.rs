@@ -1,6 +1,7 @@
 //! Tempo, beat, four-beat bar-grid, and per-bar vocal analysis for music tracks.
 
 mod bars;
+pub mod models;
 mod vocal;
 
 use std::path::Path;

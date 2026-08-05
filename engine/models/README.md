@@ -4,10 +4,13 @@ The engine uses the MIT-licensed small model from
 [`beat-this-rs`](https://github.com/danigb/beat-this-rs) for beat and downbeat tracking.
 Model binaries are intentionally not committed to Git.
 
-From the repository root, download and checksum-verify them with the CLI:
+Build the native library and download the models with the Dart CLI:
 
 ```sh
-cargo run --manifest-path engine/Cargo.toml --package mixup -- install --path engine/models
+cd apps/mixup_cli
+dart pub get
+dart run bin/mixup_cli.dart build-native
+dart run bin/mixup_cli.dart install --path ../../engine/models
 ```
 
 Omit `--path` to store the models in `models/` under the current directory. Pass

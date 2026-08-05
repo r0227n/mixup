@@ -12,5 +12,8 @@ anyhow = "1"
 beat-this = "1"
 hound = "3"
 mixup-domain = { path = "../domain" }
+serde = { version = "1", features = ["derive"] }
+sha2 = "0.10"
 stem-splitter-core = { version = "1.2", default-features = false }
 tempfile = "3"
+ureq = { version = "3", default-features = false, features = ["rustls"] }

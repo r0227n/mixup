@@ -1,0 +1,8 @@
+base_dir: .
+rust_input: crate::api
+rust_root: engine/crates/bridge
+rust_output: engine/crates/bridge/src/frb_generated.rs
+dart_root: packages/mixup_ffi
+dart_output: packages/mixup_ffi/lib/src/rust
+dart_entrypoint_class_name: MixupRustLib
+web: false
