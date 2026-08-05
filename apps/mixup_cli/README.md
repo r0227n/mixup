@@ -26,5 +26,15 @@ dart run bin/mixup_cli.dart \
   analyze path/to/audio.mp3 --models ../../engine/models
 ```
 
+解析結果は通常、JSONとして標準出力へ出力されます。ファイルへ保存する場合は
+`--output`を指定します。
+
+```sh
+dart run bin/mixup_cli.dart \
+  analyze path/to/audio.mp3 \
+  --models ../../engine/models \
+  --output analysis.json
+```
+
 通常はアプリ直下の `libmixup_ffi.dylib` が自動的に使われます。別のライブラリを検証
 する場合だけ `--library` または `MIXUP_FFI_LIBRARY` で上書きできます。

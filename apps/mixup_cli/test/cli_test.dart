@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:mixup_ffi/mixup_ffi.dart';
@@ -74,6 +75,38 @@ void main() {
       (json['bars']! as List<Object?>).single,
       containsPair('vocal_state', 'vocal'),
     );
+  });
+
+  test('analyze writes JSON to the requested output file', () async {
+    final backend = _FakeBackend();
+    final output = StringBuffer();
+    final errors = StringBuffer();
+    final temporaryDirectory = await Directory.systemTemp.createTemp(
+      'mixup-cli-test-',
+    );
+    addTearDown(() => temporaryDirectory.delete(recursive: true));
+    final outputFile = File('${temporaryDirectory.path}/analysis.json');
+
+    final exitCode = await runCli(
+      [
+        '--library',
+        '/native/library',
+        'analyze',
+        'song.wav',
+        '--output',
+        outputFile.path,
+      ],
+      output: output,
+      errorOutput: errors,
+      loader: (_) async => MixupFfi.withBackend(backend),
+    );
+
+    expect(exitCode, 0);
+    expect(output.toString(), isEmpty);
+    expect(errors.toString(), 'Analyzing song.wav\n');
+    final json = jsonDecode(await outputFile.readAsString());
+    expect(json, isA<Map<String, Object?>>());
+    expect((json as Map<String, Object?>)['tempo_bpm'], 120.0);
   });
 
   test('build-native uses the release manifest and app destination', () async {

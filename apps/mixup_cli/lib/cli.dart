@@ -113,9 +113,15 @@ Future<int> _analyze(
     input,
     modelsDirectory: command.option('models')!,
   );
-  output.writeln(
-    const JsonEncoder.withIndent('  ').convert(_analysisJson(result)),
-  );
+  final json = const JsonEncoder.withIndent(
+    '  ',
+  ).convert(_analysisJson(result));
+  final outputPath = command.option('output');
+  if (outputPath == null) {
+    output.writeln(json);
+  } else {
+    await File(outputPath).writeAsString('$json\n');
+  }
   return 0;
 }
 
@@ -158,6 +164,11 @@ ArgParser _createParser(String? defaultLibraryPath) {
       defaultsTo: 'models',
       valueHelp: 'DIR',
       help: 'Directory containing the analysis models.',
+    )
+    ..addOption(
+      'output',
+      valueHelp: 'FILE',
+      help: 'Write analysis JSON to a file instead of standard output.',
     )
     ..addFlag('help', abbr: 'h', negatable: false, help: 'Show command help.');
 
