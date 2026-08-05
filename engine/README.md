@@ -15,7 +15,6 @@ engine/
 │   └── domain/       # 解析結果の共通ドメイン型
 ├── assets/           # 開発用のローカル音源（Git管理外）
 ├── models/           # モデルの取得情報とローカル配置先
-├── scripts/          # モデル取得などの補助スクリプト
 └── tools/            # 解析結果を確認する開発用ツール
 ```
 
@@ -43,10 +42,13 @@ Rustのバージョンとコンポーネントは `rust-toolchain.toml` に固�
 リポジトリルートで、拍解析用モデルをダウンロードします。
 
 ```sh
-./engine/scripts/download-models.sh
+cargo run --manifest-path engine/Cargo.toml \
+  --package mixup \
+  -- \
+  install --path engine/models
 ```
 
-スクリプトはモデルのSHA-256チェックサムを検証し、既定で `engine/models/` に保存します。ボーカル分離用モデルは初回解析時にOSのアプリケーションキャッシュへ自動的にダウンロードされます。
+CLIはモデルのSHA-256チェックサムを検証します。ボーカル分離用モデルは初回解析時にOSのアプリケーションキャッシュへ自動的にダウンロードされます。
 
 著作権上、再配布できない楽曲をリポジトリへ追加しないでください。ローカルの開発用音源は `engine/assets/` に置き、Gitでは管理しません。
 
@@ -58,6 +60,7 @@ Rustのバージョンとコンポーネントは `rust-toolchain.toml` に固�
 cargo run --manifest-path engine/Cargo.toml \
   --package mixup \
   -- \
+  analyze \
   path/to/audio.mp3 \
   --models engine/models
 ```

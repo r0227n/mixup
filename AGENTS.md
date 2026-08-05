@@ -28,7 +28,6 @@
 │   │   └── bridge/       # FlutterとのFFI境界
 │   ├── assets/           # エンジン開発用のローカル音源（Git管理外）
 │   ├── models/           # モデルの取得情報とチェックサム
-│   ├── scripts/          # エンジン開発補助スクリプト
 │   └── tools/            # 解析結果の確認ツール
 ├── contracts/            # API・FFIで共有するデータ仕様
 ├── samples/              # 再配布可能なテスト用音源
