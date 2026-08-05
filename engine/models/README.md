@@ -4,14 +4,14 @@ The engine uses the MIT-licensed small model from
 [`beat-this-rs`](https://github.com/danigb/beat-this-rs) for beat and downbeat tracking.
 Model binaries are intentionally not committed to Git.
 
-From the repository root, download and checksum-verify them with:
+From the repository root, download and checksum-verify them with the CLI:
 
 ```sh
-./engine/scripts/download-models.sh
+cargo run --manifest-path engine/Cargo.toml --package mixup -- install --path engine/models
 ```
 
-By default, the script stores the models in `engine/models/`. An explicit destination may be
-passed as its first argument.
+Omit `--path` to store the models in `models/` under the current directory. Pass
+`mel-spectrogram` or `beat-this-small` after `install` to download only one model.
 
 | File | SHA-256 |
 |---|---|

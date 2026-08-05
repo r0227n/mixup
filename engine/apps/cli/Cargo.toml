@@ -1,5 +1,5 @@
 [package]
-name = "mixup-cli"
+name = "mixup"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -12,3 +12,8 @@ anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 mixup-analysis = { path = "../../crates/analysis" }
 serde_json = "1"
+sha2 = "0.10"
+ureq = { version = "3", default-features = false, features = ["rustls"] }
+
+[dev-dependencies]
+tempfile = "3"

@@ -1,4 +1,4 @@
-# mixup-cli
+# mixup
 
 音声ファイルを解析し、テンポ、4拍単位の小節、および小節ごとのボーカル活動をJSONで出力するCLIです。
 
@@ -6,13 +6,25 @@
 
 Rustツールチェーンと、解析対象の音声ファイルを用意してください。対応する音声形式はMP3、WAV、FLAC、OGGです。
 
-拍解析用モデルはGitで管理していないため、リポジトリルートで次のコマンドを実行してダウンロードします。
+拍解析用モデルはGitで管理していないため、CLIの `install` コマンドでダウンロードします。
 
 ```sh
-./engine/scripts/download-models.sh
+cargo run --manifest-path engine/Cargo.toml \
+  --package mixup \
+  -- \
+  install --path engine/models
 ```
 
-モデルは既定で `engine/models/` に保存されます。ボーカル分離用モデルは、初回解析時にOSのアプリケーションキャッシュへ自動的にダウンロードされます。
+モデル名を省略すると、解析に必要なモデルをすべて取得します。個別に取得する場合は `mel-spectrogram` または `beat-this-small` を指定できます。
+
+```sh
+cargo run --manifest-path engine/Cargo.toml \
+  --package mixup \
+  -- \
+  install beat-this-small --path engine/models
+```
+
+保存先を省略した場合は、カレントディレクトリの `models/` に保存されます。ダウンロードしたモデルは、利用前にSHA-256チェックサムが検証されます。ボーカル分離用モデルは、初回解析時にOSのアプリケーションキャッシュへ自動的にダウンロードされます。
 
 ## 実行方法
 
@@ -20,8 +32,9 @@ Rustツールチェーンと、解析対象の音声ファイルを用意して�
 
 ```sh
 cargo run --manifest-path engine/Cargo.toml \
-  --package mixup-cli \
+  --package mixup \
   -- \
+  analyze \
   path/to/audio.mp3 \
   --models engine/models
 ```
@@ -32,8 +45,9 @@ cargo run --manifest-path engine/Cargo.toml \
 
 ```sh
 cargo run --quiet --manifest-path engine/Cargo.toml \
-  --package mixup-cli \
+  --package mixup \
   -- \
+  analyze \
   path/to/audio.mp3 \
   --models engine/models \
   > analysis.json
@@ -112,17 +126,13 @@ cargo run --quiet --manifest-path engine/Cargo.toml \
 ## オプション
 
 ```text
-mixup-cli [OPTIONS] <INPUT>
-
-Arguments:
-  <INPUT>  解析する音声ファイル
-
-Options:
-      --models <MODELS>  拍解析用モデルを格納したディレクトリ [default: models]
-  -h, --help             ヘルプを表示
+mixup analyze [OPTIONS] <INPUT>
+mixup install [OPTIONS] [MODEL]
 ```
 
-`--models` を省略した場合は、カレントディレクトリの `models/` が参照されます。
+- `analyze --models <DIR>`: 解析に使うモデルのディレクトリ。既定値は `models` です。
+- `install [MODEL]`: 指定モデルを取得します。省略時は全モデルを取得します。
+- `install --path <DIR>` / `-p <DIR>`: モデルの保存先。既定値は `models` です。
 
 ## ビルド済みバイナリを使う
 
@@ -131,13 +141,14 @@ Options:
 ```sh
 cargo build --release \
   --manifest-path engine/Cargo.toml \
-  --package mixup-cli
+  --package mixup
 ```
 
 リポジトリルートから、生成されたバイナリを次のように実行できます。
 
 ```sh
-./engine/target/release/mixup-cli \
+./engine/target/release/mixup \
+  analyze \
   path/to/audio.mp3 \
   --models engine/models
 ```
