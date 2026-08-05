@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Patrol Tests from lib"
+  short_description: "lib実装から画面単位のPatrolテストと日本語文書を作成"
+  default_prompt: "Use $write-patrol-tests-from-lib to derive screen-grouped Patrol tests and matching Japanese docs from the Flutter lib implementation."
