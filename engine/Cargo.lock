@@ -949,6 +949,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "mixup"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "mixup-analysis",
+ "serde_json",
+]
+
+[[package]]
 name = "mixup-analysis"
 version = "0.1.0"
 dependencies = [
@@ -958,16 +968,6 @@ dependencies = [
  "mixup-domain",
  "stem-splitter-core",
  "tempfile",
-]
-
-[[package]]
-name = "mixup-cli"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "mixup-analysis",
- "serde_json",
 ]
 
 [[package]]

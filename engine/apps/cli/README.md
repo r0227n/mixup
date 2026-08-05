@@ -1,4 +1,4 @@
-# mixup-cli
+# mixup
 
 音声ファイルを解析し、テンポ、4拍単位の小節、および小節ごとのボーカル活動をJSONで出力するCLIです。
 
@@ -20,7 +20,7 @@ Rustツールチェーンと、解析対象の音声ファイルを用意して�
 
 ```sh
 cargo run --manifest-path engine/Cargo.toml \
-  --package mixup-cli \
+  --package mixup \
   -- \
   path/to/audio.mp3 \
   --models engine/models
@@ -32,7 +32,7 @@ cargo run --manifest-path engine/Cargo.toml \
 
 ```sh
 cargo run --quiet --manifest-path engine/Cargo.toml \
-  --package mixup-cli \
+  --package mixup \
   -- \
   path/to/audio.mp3 \
   --models engine/models \
@@ -112,7 +112,7 @@ cargo run --quiet --manifest-path engine/Cargo.toml \
 ## オプション
 
 ```text
-mixup-cli [OPTIONS] <INPUT>
+mixup [OPTIONS] <INPUT>
 
 Arguments:
   <INPUT>  解析する音声ファイル
@@ -131,13 +131,13 @@ Options:
 ```sh
 cargo build --release \
   --manifest-path engine/Cargo.toml \
-  --package mixup-cli
+  --package mixup
 ```
 
 リポジトリルートから、生成されたバイナリを次のように実行できます。
 
 ```sh
-./engine/target/release/mixup-cli \
+./engine/target/release/mixup \
   path/to/audio.mp3 \
   --models engine/models
 ```

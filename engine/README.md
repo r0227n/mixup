@@ -56,7 +56,7 @@ Rustのバージョンとコンポーネントは `rust-toolchain.toml` に固�
 
 ```sh
 cargo run --manifest-path engine/Cargo.toml \
-  --package mixup-cli \
+  --package mixup \
   -- \
   path/to/audio.mp3 \
   --models engine/models
