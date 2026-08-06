@@ -1,0 +1,25 @@
+name: mixup_media_player
+description: A unified Flutter media player for video, audio, and YouTube sources.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_soloud: ^4.1.6
+  video_player: ^2.13.0
+  youtube_player_flutter: ^10.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^10.1.0
+
+flutter:
+  uses-material-design: true
