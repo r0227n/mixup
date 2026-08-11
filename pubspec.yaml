@@ -10,4 +10,6 @@ dev_dependencies:
 
 workspace:
   - packages/mixup_ffi
+  - packages/mixup_media_player
+  - packages/mixup_media_player/example
   - apps/mixup_cli

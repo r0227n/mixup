@@ -1,0 +1,23 @@
+name: mixup_media_player_example
+description: Demonstrates unified video, audio, and YouTube playback.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mixup_media_player:
+    path: ..
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^10.1.0
+
+flutter:
+  uses-material-design: true
