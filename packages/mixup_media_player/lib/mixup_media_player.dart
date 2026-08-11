@@ -28,5 +28,4 @@ export 'src/model/media_state.dart'
         MediaPlaybackStatus,
         MediaRecoveryAction,
         MediaState;
-export 'src/viewer/mixup_media_viewer.dart'
-    show MixupMediaViewer, MixupMediaViewerLabels;
+export 'src/viewer/mixup_media_viewer.dart' show MixupMediaViewer;

@@ -25,6 +25,42 @@ final class ExampleApp extends StatelessWidget {
 
 enum _ExampleMediaType { video, audio, youtube }
 
+@immutable
+/// Localizable text used by the example playback controls.
+final class _ExamplePlaybackLabels {
+  /// Creates customizable, localizable control labels.
+  const _ExamplePlaybackLabels({
+    this.loading = 'Loading media…',
+    this.retry = 'Retry',
+    this.play = 'Play',
+    this.pause = 'Pause',
+    this.stop = 'Stop',
+    this.rewind = 'Rewind 10 seconds',
+    this.forward = 'Forward 10 seconds',
+  });
+
+  /// Loading semantics label.
+  final String loading;
+
+  /// Retry button label.
+  final String retry;
+
+  /// Play button label.
+  final String play;
+
+  /// Pause button label.
+  final String pause;
+
+  /// Stop button label.
+  final String stop;
+
+  /// Backward skip tooltip.
+  final String rewind;
+
+  /// Forward skip tooltip.
+  final String forward;
+}
+
 /// Screen for selecting a media type and entering its URL.
 final class PlayerExampleScreen extends StatefulWidget {
   /// Creates the interactive example screen.
@@ -46,6 +82,16 @@ final class _PlayerExampleScreenState extends State<PlayerExampleScreen> {
   _ExampleMediaType _type = _ExampleMediaType.video;
   late final TextEditingController _urlController;
   late final MixupMediaController _mixupMediaController;
+
+  static const _labels = _ExamplePlaybackLabels(
+    loading: 'メディアを読み込んでいます',
+    retry: '再試行',
+    play: '再生',
+    pause: '一時停止',
+    stop: '停止',
+    rewind: '10秒戻る',
+    forward: '10秒進む',
+  );
 
   @override
   void initState() {
@@ -139,18 +185,152 @@ final class _PlayerExampleScreenState extends State<PlayerExampleScreen> {
             child: const Text('読み込む'),
           ),
           const SizedBox(height: 24),
-          MixupMediaViewer(
-            controller: _mixupMediaController,
-            labels: const MixupMediaViewerLabels(
-              loading: 'メディアを読み込んでいます',
-              retry: '再試行',
-              play: '再生',
-              pause: '一時停止',
-              stop: '停止',
-              rewind: '10秒戻る',
-              forward: '10秒進む',
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MixupMediaViewer(
+                controller: _mixupMediaController,
+                loadingLabel: _labels.loading,
+              ),
+              _PlaybackFooter(
+                controller: _mixupMediaController,
+                labels: _labels,
+              ),
+            ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Playback controls and error UI owned by the example app.
+final class _PlaybackFooter extends StatelessWidget {
+  const _PlaybackFooter({required this.controller, required this.labels});
+
+  final MixupMediaController controller;
+  final _ExamplePlaybackLabels labels;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final state = controller.state;
+
+        if (state.status == MediaPlaybackStatus.error) {
+          return _ErrorView(
+            controller: controller,
+            state: state,
+            labels: labels,
+          );
+        }
+
+        return _Controls(
+          controller: controller,
+          state: state,
+          labels: labels,
+        );
+      },
+    );
+  }
+}
+
+final class _Controls extends StatelessWidget {
+  const _Controls({
+    required this.controller,
+    required this.state,
+    required this.labels,
+  });
+
+  final MixupMediaController controller;
+  final MediaState state;
+  final _ExamplePlaybackLabels labels;
+
+  @override
+  Widget build(BuildContext context) {
+    final max = state.duration.inMilliseconds.toDouble();
+    final value = state.position.inMilliseconds.clamp(0, max > 0 ? max : 1);
+
+    return Column(
+      children: [
+        Slider(
+          value: value.toDouble(),
+          max: max > 0 ? max : 1,
+          onChanged: state.isReady
+              ? (milliseconds) => controller
+                    .seek(Duration(milliseconds: milliseconds.round()))
+                    .ignore()
+              : null,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              tooltip: labels.rewind,
+              onPressed: () =>
+                  controller.skipBackward(const Duration(seconds: 10)).ignore(),
+              icon: const Icon(Icons.replay_10),
+            ),
+            IconButton(
+              tooltip: state.isPlaying ? labels.pause : labels.play,
+              onPressed: () =>
+                  (state.isPlaying ? controller.pause() : controller.play())
+                      .ignore(),
+              icon: Icon(state.isPlaying ? Icons.pause : Icons.play_arrow),
+            ),
+            IconButton(
+              tooltip: labels.stop,
+              onPressed: () => controller.stop().ignore(),
+              icon: const Icon(Icons.stop),
+            ),
+            IconButton(
+              tooltip: labels.forward,
+              onPressed: () =>
+                  controller.skipForward(const Duration(seconds: 10)).ignore(),
+              icon: const Icon(Icons.forward_10),
+            ),
+            Text('${_format(state.position)} / ${_format(state.duration)}'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String _format(Duration value) {
+    final minutes = value.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = value.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return value.inHours > 0
+        ? '${value.inHours}:$minutes:$seconds'
+        : '$minutes:$seconds';
+  }
+}
+
+final class _ErrorView extends StatelessWidget {
+  const _ErrorView({
+    required this.controller,
+    required this.state,
+    required this.labels,
+  });
+
+  final MixupMediaController controller;
+  final MediaState state;
+  final _ExamplePlaybackLabels labels;
+
+  @override
+  Widget build(BuildContext context) {
+    final failure = state.failure!;
+
+    return Semantics(
+      liveRegion: true,
+      child: Column(
+        children: [
+          Text(failure.message),
+          if (failure.recoveryAction == MediaRecoveryAction.retry)
+            TextButton(
+              onPressed: () => controller.retry().ignore(),
+              child: Text(labels.retry),
+            ),
         ],
       ),
     );
