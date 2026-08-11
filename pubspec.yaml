@@ -9,6 +9,7 @@ dev_dependencies:
   very_good_analysis: ^10.1.0
 
 workspace:
+  - packages/okf_repository
   - packages/mixup_ffi
   - packages/mixup_media_player
   - packages/mixup_media_player/example
