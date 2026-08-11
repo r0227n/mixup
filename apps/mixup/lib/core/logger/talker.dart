@@ -4,7 +4,8 @@ import 'package:talker_flutter/talker_flutter.dart';
 part 'talker.g.dart';
 
 /// Creates the application-wide Talker instance.
-Talker createTalker() => TalkerFlutter.init();
+Talker createTalker({TalkerObserver? observer}) =>
+    TalkerFlutter.init(observer: observer);
 
 /// The application-wide Talker instance supplied by the composition root.
 @Riverpod(keepAlive: true)

@@ -1,44 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mixup/domain/songs/song.dart';
+import 'package:mixup/presentation/features/home/controllers/home_content_provider.dart';
 
-/// The temporary home screen displayed while Mixup features are being built.
-class HomeScreen extends StatefulWidget {
+/// The temporary home screen displaying repository content for debugging.
+class HomeScreen extends ConsumerWidget {
   /// Creates the temporary home screen.
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() => _counter++);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final content = ref.watch(homeContentProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Flutter Demo Home Page'),
+        title: const Text('Mixup repository debug'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: content.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SelectableText('読み込みに失敗しました\n$error'),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: () => ref.invalidate(homeContentProvider),
+                  child: const Text('再試行'),
+                ),
+              ],
             ),
+          ),
+        ),
+        data: (data) => ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Text(
+              '楽曲 (${data.songs.length})',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            for (final song in data.songs)
+              ListTile(
+                title: Text(song.title),
+                subtitle: Text(song.sourcePath),
+                onTap: () => _showLyrics(context, song),
+              ),
+            const Divider(),
+            Text(
+              'MIX (${data.mixes.length})',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            for (final mix in data.mixes)
+              ListTile(
+                title: Text(mix.title),
+                subtitle: Text('${mix.bars}小節 · ${mix.call}'),
+              ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+
+  Future<void> _showLyrics(BuildContext context, Song song) {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(song.title),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: SingleChildScrollView(
+            child: SelectableText(song.lyrics),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('閉じる'),
+          ),
+        ],
       ),
     );
   }
