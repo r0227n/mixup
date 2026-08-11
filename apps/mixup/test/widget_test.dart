@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mixup/application/ports/mix_repository.dart';
@@ -29,7 +28,7 @@ void main() {
     expect(find.text('Test mix'), findsOneWidget);
   });
 
-  testWidgets('shows lyrics dialog when utage lyrics are tapped', (
+  testWidgets('shows the practice entry point for a repository song', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -44,17 +43,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('utage/lyrics.md'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.text('Test song'), findsNWidgets(2));
-    expect(find.text('UtaGe! test lyrics'), findsOneWidget);
-
-    await tester.tap(find.text('閉じる'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.text('Test song'), findsOneWidget);
+    expect(find.text('utage/lyrics.md'), findsOneWidget);
   });
 }
 

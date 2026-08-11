@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mixup/domain/songs/song.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mixup/presentation/features/home/controllers/home_content_provider.dart';
 
 /// The temporary home screen displaying repository content for debugging.
@@ -45,7 +45,9 @@ class HomeScreen extends ConsumerWidget {
               ListTile(
                 title: Text(song.title),
                 subtitle: Text(song.sourcePath),
-                onTap: () => _showLyrics(context, song),
+                onTap: () => context.go(
+                  '/songs/${song.sourcePath.split('/').first}/timing',
+                ),
               ),
             const Divider(),
             Text(
@@ -59,27 +61,6 @@ class HomeScreen extends ConsumerWidget {
               ),
           ],
         ),
-      ),
-    );
-  }
-
-  Future<void> _showLyrics(BuildContext context, Song song) {
-    return showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(song.title),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: SingleChildScrollView(
-            child: SelectableText(song.lyrics),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('閉じる'),
-          ),
-        ],
       ),
     );
   }

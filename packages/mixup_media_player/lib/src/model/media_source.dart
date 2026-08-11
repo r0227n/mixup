@@ -129,6 +129,26 @@ final class AssetAudioData extends AudioData {
   final String asset;
 }
 
+/// A non-empty local filesystem path containing audio data.
+final class FileAudioData extends AudioData {
+  /// Validates and stores [path].
+  factory FileAudioData(String path) {
+    if (path.trim().isEmpty) {
+      throw MediaSourceValidationException(
+        field: 'path',
+        message: 'The audio file path must not be empty.',
+        rejectedValue: path,
+      );
+    }
+    return FileAudioData._(path);
+  }
+
+  const FileAudioData._(this.path);
+
+  /// Local path passed to the platform audio backend.
+  final String path;
+}
+
 void _validateNetworkUrl(Uri url, {required String field}) {
   if (!url.hasAuthority ||
       url.host.isEmpty ||

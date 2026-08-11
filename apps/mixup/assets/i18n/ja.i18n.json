@@ -1,0 +1,91 @@
+{
+  "practice": {
+    "common": {
+      "retry": "再試行",
+      "duplicate": "複製",
+      "delete": "削除",
+      "editInterval": "区間を編集",
+      "moveBack": "0.1秒前へ移動",
+      "moveForward": "0.1秒後へ移動"
+    },
+    "errors": {
+      "selectLyric": "歌詞行を選択してください。",
+      "noData": "編集中のデータがありません。",
+      "mediaNotReady": "音源の読み込み完了後に登録してください。",
+      "invalidInterval": "開始 < 終了とし、音源の範囲内で指定してください。",
+      "invalidTime": "時刻を秒で入力してください。",
+      "selectMix": "MIXを選択してください。"
+    },
+    "scaffold": {
+      "undo": "元に戻す",
+      "redo": "やり直す",
+      "save": "保存",
+      "timingStep": "1. 歌詞・間奏",
+      "mixStep": "2. MIX設定",
+      "lyricsChanged": "lyrics.md の歌詞行が更新されています。既存区間は保持されています。内容を確認して再紐付けしてください。",
+      "relinkInEditor": "編集パネルで再紐付け",
+      "saveFailed": "保存に失敗しました。編集内容は保持されています。\n$error",
+      "status": {
+        "saved": "保存済み",
+        "dirty": "未保存の変更あり",
+        "saving": "保存中…",
+        "failed": "保存失敗"
+      }
+    },
+    "player": {
+      "loading": "音源を読み込んでいます",
+      "failure": "音源の読み込み・再生に失敗しました\n$error",
+      "backFive": "5秒戻る",
+      "pause": "一時停止",
+      "play": "再生",
+      "forwardFive": "5秒進む",
+      "status": {
+        "playing": "再生中",
+        "paused": "一時停止中",
+        "stopped": "停止中",
+        "completed": "再生完了"
+      }
+    },
+    "timeline": {
+      "title": "タイムライン",
+      "lyricsTrack": "歌詞",
+      "mixTrack": "MIX",
+      "dragHint": "$label（ドラッグで移動）"
+    },
+    "intervalForm": {
+      "startSeconds": "開始（秒）",
+      "setCurrentStart": "現在位置を開始に設定",
+      "endSeconds": "終了（秒）",
+      "setCurrentEnd": "現在位置を終了に設定"
+    },
+    "lyrics": {
+      "unsynced": "未同期",
+      "intervalCount": "$count区間",
+      "editorTitle": "区間の編集",
+      "selectLine": "歌詞行を選択してください",
+      "addInterval": "歌詞区間を追加",
+      "interlude": "間奏",
+      "interludeLabel": "間奏ラベル",
+      "addInterlude": "歌詞なし区間（間奏）を追加",
+      "savedInterludes": "登録済みの間奏",
+      "relinkRequired": "再紐付けが必要な歌詞区間",
+      "confirmNoIntervals": "歌詞の更新を確認済みにする",
+      "relinkTarget": "紐付け先",
+      "loadFailure": "曲バンドルの読み込みに失敗しました。lyrics.md、音源、設定を確認してください。\n$error"
+    },
+    "mix": {
+      "loadFailure": "読み込みに失敗しました。再試行\n$error",
+      "search": "MIX名・本文・小節数で検索",
+      "barsAndCall": "$bars小節 · $call",
+      "editorTitle": "選択区間のMIX",
+      "selectFromList": "左の一覧からMIXを選択してください。",
+      "assign": "この区間へMIXを設定",
+      "note": "メモ（任意）",
+      "autoPause": "MIX開始時に自動で一時停止",
+      "assignedCount": "設定済みMIX ($count)",
+      "betweenLyrics": "間奏・歌詞の間",
+      "duringLyrics": "歌詞中: $lyrics",
+      "missingReference": "参照切れ: $mixId"
+    }
+  }
+}

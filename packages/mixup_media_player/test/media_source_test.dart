@@ -2,6 +2,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mixup_media_player/mixup_media_player.dart';
 
 void main() {
+  group('local file validation', () {
+    test('accepts a non-empty audio path', () {
+      expect(FileAudioData('/tmp/reference.mp3').path, '/tmp/reference.mp3');
+    });
+
+    test('rejects an empty audio path', () {
+      expect(
+        () => FileAudioData('  '),
+        throwsA(isA<MediaSourceValidationException>()),
+      );
+    });
+  });
+
   group('network media validation', () {
     test('accepts absolute HTTP and HTTPS URLs', () {
       expect(

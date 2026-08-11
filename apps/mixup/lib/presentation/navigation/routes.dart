@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:mixup/core/logger/talker.dart';
 import 'package:mixup/presentation/features/home/screens/home_screen.dart';
+import 'package:mixup/presentation/features/practice/screens/lyrics_timing_screen.dart';
+import 'package:mixup/presentation/features/practice/screens/mix_assignment_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -16,6 +18,18 @@ GoRouter goRouter(Ref ref) {
       GoRoute(
         path: '/',
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: '/songs/:songId/timing',
+        builder: (context, state) => LyricsTimingScreen(
+          songId: state.pathParameters['songId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/songs/:songId/mix',
+        builder: (context, state) => MixAssignmentScreen(
+          songId: state.pathParameters['songId']!,
+        ),
       ),
     ],
   );

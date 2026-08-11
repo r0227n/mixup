@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marionette_flutter/marionette_flutter.dart';
+import 'package:mixup/core/gen/slang.g.dart';
 import 'package:mixup/core/logger/talker.dart';
 import 'package:mixup/infrastructure/observability/marionette_talker_observer.dart';
 import 'package:mixup/presentation/navigation/routes.dart';
@@ -25,6 +26,8 @@ Future<void> main() async {
       } else {
         WidgetsFlutterBinding.ensureInitialized();
       }
+
+      await LocaleSettings.useDeviceLocale();
 
       runApp(
         ProviderScope(
@@ -48,11 +51,13 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
 
-    return MaterialApp.router(
-      title: 'Flutter Demo',
-      routerConfig: router,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return TranslationProvider(
+      child: MaterialApp.router(
+        title: 'Mixup',
+        routerConfig: router,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
       ),
     );
   }

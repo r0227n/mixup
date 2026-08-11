@@ -14,6 +14,7 @@ export 'src/model/media_source.dart'
         AssetVideoData,
         AudioData,
         AudioMediaSource,
+        FileAudioData,
         MediaSource,
         NetworkAudioData,
         NetworkVideoData,

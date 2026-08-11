@@ -189,3 +189,57 @@ final class MixRepositoryProvider
 }
 
 String _$mixRepositoryHash() => r'd667d8adb1d9e80a52c3bb0abe2399762f46f170';
+
+/// Creates the atomic JSON store used by the practice editor.
+
+@ProviderFor(practiceTimelineRepository)
+final practiceTimelineRepositoryProvider =
+    PracticeTimelineRepositoryProvider._();
+
+/// Creates the atomic JSON store used by the practice editor.
+
+final class PracticeTimelineRepositoryProvider
+    extends
+        $FunctionalProvider<
+          PracticeTimelineRepository,
+          PracticeTimelineRepository,
+          PracticeTimelineRepository
+        >
+    with $Provider<PracticeTimelineRepository> {
+  /// Creates the atomic JSON store used by the practice editor.
+  PracticeTimelineRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'practiceTimelineRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$practiceTimelineRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PracticeTimelineRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  PracticeTimelineRepository create(Ref ref) {
+    return practiceTimelineRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PracticeTimelineRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PracticeTimelineRepository>(value),
+    );
+  }
+}
+
+String _$practiceTimelineRepositoryHash() =>
+    r'c103e08c6d72ff4c8f5178843ddbe2773276eabf';

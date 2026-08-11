@@ -26,6 +26,7 @@ final class AudioPlayerBackend implements MediaPlayerBackend {
     final source = switch (data) {
       NetworkAudioData(:final url) => await _player.loadUrl(url.toString()),
       AssetAudioData(:final asset) => await _player.loadAsset(asset),
+      FileAudioData(:final path) => await _player.loadFile(path),
     };
     if (_disposed) {
       await _player.disposeSource(source);

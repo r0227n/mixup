@@ -13,12 +13,6 @@ targets:
           namespaces: false
           translate_var_names: true
           flat_map: false
-          imports:
-            - package:app/domain/domain.dart
-          contexts:
-            LayoutMode:
-              default_parameter: layoutMode
-              generate_enum: false
           stats: true
           format:
             enabled: true
