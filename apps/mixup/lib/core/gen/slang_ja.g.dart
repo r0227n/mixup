@@ -218,8 +218,8 @@ class Translations$practice$timeline$ja {
   /// ja: 'MIX'
   String get mixTrack => 'MIX';
 
-  /// ja: '$label（ドラッグで移動）'
-  String dragHint({required Object label}) => '${label}（ドラッグで移動）';
+  /// ja: '$label（タップでここから再生、ドラッグで移動）'
+  String dragHint({required Object label}) => '${label}（タップでここから再生、ドラッグで移動）';
 }
 
 // Path: practice.intervalForm

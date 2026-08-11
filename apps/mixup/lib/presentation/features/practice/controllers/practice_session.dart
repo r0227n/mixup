@@ -92,6 +92,7 @@ class PracticeSession extends _$PracticeSession {
   final List<PracticeTimeline> _undo = [];
   final List<PracticeTimeline> _redo = [];
   Duration _previousPosition = Duration.zero;
+  int _segmentPlaybackRevision = 0;
   bool _autoPausePending = false;
   PracticeTimeline? _dragOrigin;
   bool _dragChanged = false;
@@ -143,6 +144,31 @@ class PracticeSession extends _$PracticeSession {
     final value = state.value;
     if (value == null) return;
     state = AsyncData(value.copyWith(autoPauseAtMix: enabled));
+  }
+
+  void playSegment(PracticeInterval interval) {
+    final controller = _mediaController;
+    if (controller == null || !interval.isValid) return;
+    final revision = ++_segmentPlaybackRevision;
+    unawaited(_startSegmentPlayback(controller, interval.start, revision));
+  }
+
+  Future<void> _startSegmentPlayback(
+    MixupMediaController controller,
+    Duration start,
+    int revision,
+  ) async {
+    try {
+      await controller.seek(start);
+      if (_mediaController != controller ||
+          revision != _segmentPlaybackRevision) {
+        return;
+      }
+      await controller.play();
+    } on MediaPlayerException {
+      // MixupMediaController reports playback failures through its state and
+      // FlutterError before rethrowing them.
+    }
   }
 
   PracticeEditError? addSelectedLyric(PracticeInterval interval) {

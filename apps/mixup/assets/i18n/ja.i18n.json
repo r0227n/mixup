@@ -50,7 +50,7 @@
       "title": "タイムライン",
       "lyricsTrack": "歌詞",
       "mixTrack": "MIX",
-      "dragHint": "$label（ドラッグで移動）"
+      "dragHint": "$label（タップでここから再生、ドラッグで移動）"
     },
     "intervalForm": {
       "startSeconds": "開始（秒）",

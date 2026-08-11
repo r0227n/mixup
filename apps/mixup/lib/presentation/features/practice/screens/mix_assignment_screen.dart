@@ -185,6 +185,7 @@ class _MixContentState extends State<_MixContent> {
           PracticeTimelineView(
             timeline: widget.data.timeline,
             controller: widget.media,
+            onPlaySegment: widget.session.playSegment,
             onMoveLyric: widget.session.nudgeLyric,
             onMoveInterlude: widget.session.nudgeInterlude,
             onMoveMix: widget.session.nudgeMix,

@@ -67,6 +67,7 @@ class _TimingContent extends StatelessWidget {
           PracticeTimelineView(
             timeline: data.timeline,
             controller: media,
+            onPlaySegment: session.playSegment,
             onMoveLyric: session.nudgeLyric,
             onMoveInterlude: session.nudgeInterlude,
             onMoveMix: session.nudgeMix,

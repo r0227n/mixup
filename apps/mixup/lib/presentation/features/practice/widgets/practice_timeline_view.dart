@@ -10,6 +10,7 @@ class PracticeTimelineView extends StatelessWidget {
   const PracticeTimelineView({
     required this.timeline,
     required this.controller,
+    required this.onPlaySegment,
     this.onMoveLyric,
     this.onMoveInterlude,
     this.onMoveMix,
@@ -20,6 +21,7 @@ class PracticeTimelineView extends StatelessWidget {
 
   final PracticeTimeline timeline;
   final MixupMediaController controller;
+  final ValueChanged<PracticeInterval> onPlaySegment;
   final void Function(String id, Duration offset)? onMoveLyric;
   final void Function(String id, Duration offset)? onMoveInterlude;
   final void Function(String id, Duration offset)? onMoveMix;
@@ -52,6 +54,7 @@ class PracticeTimelineView extends StatelessWidget {
                       item.interval,
                       Colors.blue,
                       item.text,
+                      () => onPlaySegment(item.interval),
                       (offset) => onMoveLyric?.call(item.id, offset),
                       onDragStart,
                       onDragEnd,
@@ -61,6 +64,7 @@ class PracticeTimelineView extends StatelessWidget {
                       item.interval,
                       Colors.teal,
                       item.label,
+                      () => onPlaySegment(item.interval),
                       (offset) => onMoveInterlude?.call(item.id, offset),
                       onDragStart,
                       onDragEnd,
@@ -78,6 +82,7 @@ class PracticeTimelineView extends StatelessWidget {
                       item.interval,
                       Colors.deepOrange,
                       item.mixId,
+                      () => onPlaySegment(item.interval),
                       (offset) => onMoveMix?.call(item.id, offset),
                       onDragStart,
                       onDragEnd,
@@ -97,6 +102,7 @@ final class _Segment {
     this.interval,
     this.color,
     this.label,
+    this.onTap,
     this.onNudge,
     this.onDragStart,
     this.onDragEnd,
@@ -104,6 +110,7 @@ final class _Segment {
   final PracticeInterval interval;
   final Color color;
   final String label;
+  final VoidCallback onTap;
   final ValueChanged<Duration> onNudge;
   final VoidCallback? onDragStart;
   final VoidCallback? onDragEnd;
@@ -153,6 +160,7 @@ class _Track extends StatelessWidget {
                         bottom: 4,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
+                          onTap: segment.onTap,
                           onHorizontalDragStart: (_) =>
                               segment.onDragStart?.call(),
                           onHorizontalDragUpdate: (details) {
