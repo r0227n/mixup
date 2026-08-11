@@ -5,26 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marionette_flutter/marionette_flutter.dart';
 import 'package:mixup/core/logger/talker.dart';
+import 'package:mixup/infrastructure/observability/marionette_talker_observer.dart';
 import 'package:mixup/presentation/navigation/routes.dart';
 import 'package:talker_riverpod_logger/talker_riverpod_logger_observer.dart';
 
-void main() {
-  if (kDebugMode) {
-    MarionetteBinding.ensureInitialized();
-  } else {
-    WidgetsFlutterBinding.ensureInitialized();
-  }
+Future<void> main() async {
+  final marionetteLogCollector = kDebugMode ? PrintLogCollector() : null;
+  final talker = createTalker(
+    observer: marionetteLogCollector == null
+        ? null
+        : MarionetteTalkerObserver(marionetteLogCollector),
+  );
+  await runZonedGuarded<Future<void>>(
+    () async {
+      if (kDebugMode) {
+        MarionetteBinding.ensureInitialized(
+          MarionetteConfiguration(logCollector: marionetteLogCollector),
+        );
+      } else {
+        WidgetsFlutterBinding.ensureInitialized();
+      }
 
-  final talker = createTalker();
-
-  runZonedGuarded(
-    () => runApp(
-      ProviderScope(
-        observers: [TalkerRiverpodObserver(talker: talker)],
-        overrides: [talkerProvider.overrideWithValue(talker)],
-        child: const MyApp(),
-      ),
-    ),
+      runApp(
+        ProviderScope(
+          observers: [TalkerRiverpodObserver(talker: talker)],
+          overrides: [talkerProvider.overrideWithValue(talker)],
+          child: const MyApp(),
+        ),
+      );
+    },
     (error, stackTrace) =>
         handleUncaughtAppException(talker, error, stackTrace),
   );

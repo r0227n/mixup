@@ -23,6 +23,8 @@ dependencies:
     path: ../../packages/mixup_ffi
   mixup_media_player:
     path: ../../packages/mixup_media_player
+  okf_repository:
+    path: ../../packages/okf_repository
   riverpod_annotation: ^4.0.3
   slang: ^4.19.0
   slang_flutter: ^4.19.0
