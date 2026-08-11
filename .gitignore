@@ -14,3 +14,5 @@ engine/assets/**/*.mp3
 
 # Dart
 **/.dart_tool/
+
+lyrics/
